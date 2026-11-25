@@ -1,69 +1,158 @@
-import Image from "next/image";
+import type { CSSProperties } from "react";
+import { experience, pipeline, profile, projects, skills, stats, type Project } from "@/lib/content";
+import ContactForm from "./components/contact-form";
+
+function ProjectCard({ p }: { p: Project }) {
+  const inner = (
+    <>
+      <p className="kind mono">{p.kind}</p>
+      <h3>
+        {p.name}
+        {p.href && <span aria-hidden> ↗</span>}
+      </h3>
+      <p>{p.blurb}</p>
+      <p className="chips">
+        {p.stack.map((t) => (
+          <span key={t}>{t}</span>
+        ))}
+      </p>
+    </>
+  );
+
+  return p.href ? (
+    <a className="card" href={p.href} target="_blank" rel="noreferrer">
+      {inner}
+    </a>
+  ) : (
+    <article className="card">{inner}</article>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      <header className="topbar">
+        <span className="mono">~/mashood</span>
+        <nav>
+          <a href="#work">work</a>
+          <a href="#projects">projects</a>
+          <a href="#stack">stack</a>
+          <a href="#contact">contact</a>
+        </nav>
+      </header>
+
+      <main className="wrap">
+        {/* ---------- Hero ---------- */}
+        <section className="hero">
+          <p className="status mono">
+            <span className="dot" aria-hidden /> {profile.status}
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          <h1>
+            {profile.name}
+            <span className="role">{profile.role}</span>
+          </h1>
+          <p className="tagline">{profile.tagline}</p>
+
+          <ol className="pipeline mono" aria-label="Delivery pipeline">
+            {pipeline.map((stage, i) => (
+              <li key={stage} style={{ "--i": i } as CSSProperties}>
+                {stage}
+              </li>
+            ))}
+          </ol>
+
+          <dl className="stats">
+            {stats.map((s) => (
+              <div key={s.label}>
+                <dt>{s.value}</dt>
+                <dd>{s.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        {/* ---------- Experience ---------- */}
+        <section id="work" className="block">
+          <h2 className="mono">
+            <span>01</span> experience
+          </h2>
+          <div className="timeline">
+            {experience.map((job) => (
+              <article key={job.company} className="job">
+                <p className="period mono">{job.period}</p>
+                <div>
+                  <h3>{job.company}</h3>
+                  <p className="jobtitle">{job.title}</p>
+                  <ul>
+                    {job.points.map((pt) => (
+                      <li key={pt}>{pt}</li>
+                    ))}
+                  </ul>
+                  <p className="chips">
+                    {job.stack.map((t) => (
+                      <span key={t}>{t}</span>
+                    ))}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- Projects ---------- */}
+        <section id="projects" className="block">
+          <h2 className="mono">
+            <span>02</span> projects
+          </h2>
+          <div className="grid-cards">
+            {projects.map((p) => (
+              <ProjectCard key={p.name} p={p} />
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- Stack ---------- */}
+        <section id="stack" className="block">
+          <h2 className="mono">
+            <span>03</span> stack
+          </h2>
+          <pre className="terminal mono">
+            <span className="prompt">$ kubectl get skills -o wide</span>
+            {"\n"}
+            {skills.map((s) => (
+              <span key={s.group}>
+                <span className="key">{s.group.padEnd(14, " ")}</span>
+                {s.items.join("  ·  ")}
+                {"\n"}
+              </span>
+            ))}
+          </pre>
+        </section>
+
+        {/* ---------- Contact ---------- */}
+        <section id="contact" className="block">
+          <h2 className="mono">
+            <span>04</span> contact
+          </h2>
+          <div className="contactgrid">
+            <div>
+              <p className="big">Hiring for platform, SRE or infra? Want a collab with @fromcodetocloud?</p>
+              <ul className="links">
+                {profile.links.map((l) => (
+                  <li key={l.href}>
+                    <a href={l.href} target="_blank" rel="noreferrer">
+                      {l.label} ↗
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <ContactForm />
+          </div>
+        </section>
       </main>
-    </div>
+
+      <footer className="mono">{profile.location} · deployed with monolayer on AWS</footer>
+    </>
   );
 }

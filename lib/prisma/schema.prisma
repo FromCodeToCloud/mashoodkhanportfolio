@@ -1,0 +1,19 @@
+generator client {
+  provider   = "prisma-client"
+  output     = "./generated"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(100)
+  email     String   @db.VarChar(200)
+  message   String   @db.VarChar(2000)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
