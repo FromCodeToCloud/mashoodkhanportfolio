@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma/prisma";
 
 // Validates contact-form submissions and stores them in the main-db Postgres workload.
 
@@ -31,6 +30,8 @@ export async function POST(request: Request) {
   if (error || !data) return NextResponse.json({ error }, { status: 400 });
 
   try {
+    // Load Prisma lazily: the DB URL only exists at runtime, not during `next build`.
+    const { default: prisma } = await import("@/lib/prisma/prisma");
     const saved = await prisma.message.create({ data });
     return NextResponse.json({ id: saved.id }, { status: 201 });
   } catch (err) {
